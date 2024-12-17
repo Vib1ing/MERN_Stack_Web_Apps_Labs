@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "buildfrontend": "rm -rf dist && cd ../contacts-frontend && npm run build && cp -r dist ../contacts-backend",
+    "buildfrontend": "rm -rf dist && cd ../contacts-frontend-mongodb && npm run build && cp -r dist ../contacts-backend-mongodb",
     "deploy": "npm run"
   },
   "author": "",
@@ -15,7 +15,9 @@
   "dependencies": {
     "contacts-web-server": "file:",
     "cors": "^2.8.5",
-    "express": "^4.21.1"
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "mongoose": "^8.9.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
