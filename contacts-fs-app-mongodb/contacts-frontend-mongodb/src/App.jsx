@@ -8,7 +8,7 @@ const App = () => {
 
     const [contacts, setContacts] = useState([]);
 
-    useEffect(()=>{
+    useEffect(() => {
         contactService.getContact().then(data => setContacts(data));
     }, [])
 
@@ -27,7 +27,7 @@ const App = () => {
 
     const newContact = async (e, newName, newEmail) => {
         e.preventDefault();
-        
+
         const parsedName = contactDetails(newName, newEmail);
         if (!parsedName) return;
 
@@ -41,9 +41,23 @@ const App = () => {
             newContactInfo.id = existingContacts[0].id;
             await contactService.updateContact(newContactInfo);
         } else {
-            newContactInfo.id = contacts.toSorted((a,b)=>b.id - a.id)[0] + 1;
-            await contactService.addContact(newContactInfo)
+            newContactInfo.id = contacts.toSorted((a, b) => b.id - a.id)[0] + 1;
+            await contactService.addContact(newContactInfo).then((contact) => {
+                setContacts([...contacts, contact]);
+                notify("information", `${newName} added successfully`)
+            }).catch((error) => {
+                console.log(error)
+                const errorDiv = document.createElement("div");
+                errorDiv.className = "error";
+                errorDiv.textContent = error.response.data.error;
+                document.body.appendChild(errorDiv);
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            })
+
         }
+
 
         contactService.getContact().then(data => setContacts(data));
     }
@@ -51,7 +65,7 @@ const App = () => {
     const handleDelete = (contact) => {
         if (!confirm(`Are you sure you want to delete the contact for ${contact.name}`)) return;
 
-        contactService.deleteContact(contact).then((det)=>{
+        contactService.deleteContact(contact).then((det) => {
             contactService.getContact().then(data => setContacts(data));
         });
     }

@@ -2,8 +2,8 @@
 require("dotenv").config();
 // require mongoose
 const mongoose = require("mongoose");
-
-const DB_URI = process.env.MONGODB_URI;
+const config = require("../utils/config")
+const DB_URI = config.MONGODB_URI;
 // mongoose setup and connection
 mongoose.set("strictQuery", false);
 mongoose
@@ -13,13 +13,24 @@ mongoose
     console.log("Error connecting the DB: ", e.message);
   });
 
-const contactSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-});
+// create contacts schema
 
+const contactsSchema = new mongoose.Schema({
+  name: { type: String, required: true, minLength: 2 },
+  email: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      },
+      message: (props) => `${props.value} is not a valid email`,
+    },
+    required: true,
+    minLength: 2,
+  },
+});
 // configure toJSON method
-contactSchema.set("toJSON", {
+contactsSchema.set("toJSON", {
   transform: (doc, ret) => {
     ret.id = ret._id.toString();
     delete ret._id;
@@ -28,6 +39,6 @@ contactSchema.set("toJSON", {
 });
 
 // create mongoose model
-const Contact = mongoose.model("Contact", contactSchema);
+const Contact = mongoose.model("Contacts", contactsSchema);
 
 module.exports = Contact;
