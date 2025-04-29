@@ -1,7 +1,7 @@
 import React from 'react'
 import Joke from './components/Joke'
-import JokeList from './components/jokeList'
-import JokeForm from './components/jokeForm'
+import JokeList from './components/JokeList'
+import JokeForm from './components/JokeForm'
 const App = () => {
   return (
     <div>
